@@ -9,11 +9,15 @@ A high-precision research engine for Gemini CLI designed to process academic, th
 2.  **Navigate to a Domain Workspace:**
     Open your terminal in a folder containing your `StyleMatrix.json`.
 3.  **Process a File:**
-    `gemini "/orchestrate my_dissertation.docx rewrite"`
+    `gemini "/process my_dissertation.docx rewrite"`
 
 ---
 
 ## 🛠️ Commands
+
+### `/process <file> <agent>`
+The **Master Command** for the "Perfect Combination" workflow.
+*   **What it does:** Triggers the sequential 3-pass protocol: **Chunking** (Semantic Preservation) → **Polish** (Linguistic Elevation) → **Advisory** (Metadata Insights).
 
 ### `/orchestrate <file> <intent>`
 The headless, end-to-end pipeline. 
@@ -28,26 +32,18 @@ A hardened, deterministic version of orchestration.
 The Architect's structural pass.
 *   **Use when:** You want suggestions for moving paragraphs to improve logical flow without actually changing the text. Output is saved to `ADVISORY_LOG.md`.
 
-### `/close-reading <file> <context_file>`
-Perform a deep analysis through a specific lens (e.g., Maimonides, Kant).
-*   **Use when:** You need to identify logical friction or thematic alignment based on an external "Viewpoint" file.
-
-### `/relate <file>`
-Tags the logical topology of a raw transcript.
-*   **Use when:** You need to map "Late-Additions" (Oh, by the way moments) to their original thematic blocks.
-
 ---
 
 ## 💎 The "Perfect Combination" Workflow
 
-For maximum quality, follow this 3-tier protocol:
+For maximum quality, the `/process` command automates this 3-tier protocol:
 
-1.  **Phase 1: Structured Chunking** (via `/orchestrate` or `/batch`)
+1.  **Phase 1: Structured Chunking** (via the Orchestrator)
     Ensures every technical nuance is preserved and stabilized in the new register.
 2.  **Phase 2: Mandate-Only Polish** 
-    Run a second pass asking the agent to "polish" the result. This fixes grammatical inconsistencies and elevates the registry without altering the arguments.
+    Elevates the linguistic flow, fixes grammatical inconsistencies, and enforces strict Matrix compliance without structural interference.
 3.  **Phase 3: Advisory Insights**
-    Capture metadata, suggested sources, and structural critiques in the `ADVISORY_LOG.md`.
+    Captures metadata, suggested sources, and structural critiques in the `ADVISORY_LOG.md`.
 
 ---
 
