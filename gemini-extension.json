@@ -1,0 +1,8 @@
+{
+  "name": "textual-agent",
+  "version": "1.0.0",
+  "description": "A high-precision research engine for processing academic and theological texts with zero data loss.",
+  "hooks": {
+    "SessionStart": "hooks/session-start.sh"
+  }
+}

@@ -1,0 +1,5 @@
+.DS_Store
+Temp_Build/
+Output_Files/
+*.pyc
+__pycache__/

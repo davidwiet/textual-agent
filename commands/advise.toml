@@ -1,0 +1,19 @@
+description = "Step 1 (Advisory): The Architect analyzes the document for structural improvements and logical rearrangements."
+prompt = """
+Analyze the provided source file for 'Non-Linear Logic'. Your mission is to provide strictly ADVISORY suggestions for moving text to improve the argument's flow.
+
+1.  **Identify 'Oh, by the way' moments:** Find paragraphs where the speaker returns to an earlier point or provides late evidence for a previous claim.
+2.  **Structural Mapping:** Suggest where these paragraphs *could* be moved to create a more cohesive logical sequence.
+3.  **No Modification:** Do NOT rewrite or move any text. 
+4.  **Output Format (Advisory Log):**
+    ```markdown
+    ### STRUCTURAL ADVISORY LOG
+    *   **Observation 1:** Paragraph [ID/Snippet] in the conclusion refers back to the 'Maimonides' thesis in the Intro.
+        *   *Suggestion:* Consider moving this to the 'Evidence' section of Chapter 1.
+    *   **Observation 2:** The definition of 'Intentionality' appears in a footnote on page 12, but is used as a core term on page 3.
+        *   *Suggestion:* Consider promoting this definition to the primary text in the first occurrence.
+    ```
+5.  **Save Result:** Append this to `Output_Files/ADVISORY_LOG.md`.
+
+Usage: `/advise <source_file>`
+"""

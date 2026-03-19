@@ -1,0 +1,10 @@
+description = "Perform a context-aware analysis of a document using a specific viewpoint lens."
+prompt = """
+1.  **Read Context:** Read the specified Context File (e.g., `Maimonides_View.txt`) and `StyleMatrix.json`.
+2.  **Analyze Source:** Review the source document through the provided logical framework.
+3.  **Discovery:** Identify thematic alignments, logical friction, or specific passages requiring the 'Lexical Sovereignty' (U12) re-definition.
+4.  **Output:** Provide a structured report in `Output_Files/ANALYSIS_REPORT.md`.
+
+Usage: `/close-reading <source_file> <context_file> [goal_description]`
+Example: `/close-reading lecture.docx Maimonides_View.txt 'Identify logical contradictions'`
+"""

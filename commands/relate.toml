@@ -1,0 +1,10 @@
+description = "Tag a transcript's logical structure to allow for non-linear integration (finding 'Oh, by the way' moments)."
+prompt = """
+1.  **Read Transcript:** Read the provided source file.
+2.  **Tagging:** For every major paragraph/thematic block, provide a short 1-line tag in this format:
+    `[BLOCK_ID] [TOPIC] [ROLE: Thesis/Evidence/Late-Addition/Nuance]`
+3.  **Cross-Reference:** Specifically look for "Late-Additions" (e.g., "Earlier I said...", "Regarding that first point...") and link them to the original Block ID.
+4.  **Save Index:** Save this as `Temp_Build/Topology/relational_index.json`.
+
+Usage: `/relate <source_file>`
+"""

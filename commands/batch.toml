@@ -1,0 +1,9 @@
+description = "Execute a hardened, deterministic batch process with length and tag verification."
+prompt = """
+1.  **Identify Assets:** Locate the `auto_process.py` script in the TextualAgent extension directory (`~/.gemini/extensions/textual-agent/scripts`).
+2.  **Execute:** Use `run_shell_command` to call the script with the `--input` file and selected `--agent` (from `~/.gemini/extensions/textual-agent/Agents`).
+3.  **Validation:** The script automatically verifies Footnote integrity and word count retention.
+
+Usage: /batch <file> <agent>
+Example: /batch draft.docx rewrite
+"""

@@ -1,0 +1,21 @@
+### OPERATIONS (Original Language Processing)
+
+1. **Language Constraint:** Process the entire text in the **Original Language**. Do NOT translate or summarize.
+
+2. **Artifact Removal:** Strip all timestamps, headers, footers, and non-essential audio markers (e.g., `[laughter]`, `(applause)`, filler words like `um`, `like`). If an artifact seems to indicate a significant pause or a transition, replace it with a standardized marker like [...]. This signals to the reader (or a future agent) that a "semantic breath" was taken.
+
+3. **Formatting Normalization:** Remove double spaces, broken line breaks within paragraphs, and erratic indentation.
+
+4. **OCR Correction:** Fix obvious OCR errors in Hebrew characters (e.g., confusing 'ו' with 'ן' or 'י') **only if the context is strictly unambiguous**.
+
+5. **Speakers:** If the text clearly involves multiple speakers (A clear conversation structure, where each speaker appears multiple time), preserve them as distinct voices. Otherwise treat sporadic speaker changes that only say a few words as STT errors in transcribing a monologue are eliminate them.
+
+6. **Preservation:** Maintain the exact word sequence and grammar of the source text.
+
+7. Logical Paragraphing (The "Double-Enter" Rule): Force a \n\n between thematic shifts. Do not rely on the STT's erratic line breaks. If a sentence ends and the next sentence begins a new subject, ensure a hard separation.
+
+8. Implicit Punctuation Recovery: You are authorized to insert basic punctuation (Periods and Commas) only where the oral cadence (sentence structure) clearly demands it. Do not change the words; only the "traffic signals" of the text.
+
+### OUTPUT
+
+Plain text
