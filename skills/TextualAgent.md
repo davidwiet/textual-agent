@@ -1,9 +1,9 @@
 ---
-name: text-transformer
+name: TextualAgent
 description: Use when performing high-precision, style-sensitive rewriting or translation of long-form documents. Enforces the "Perfect Combination" workflow (Chunking + Polish + Advisory) to ensure zero data loss and maximum stylistic fidelity.
 ---
 
-# Text Transformer Skill: The Sovereign Scribe Protocol
+# TextualAgent: The Sovereign Scribe Protocol
 
 ## Overview
 This skill implements the **TextualAgent** orchestration logic: a multi-pass, high-fidelity pipeline that respects external stylistic rules ("Style Matrix") and ensures the structural and semantic integrity of complex documents.
@@ -18,11 +18,11 @@ Maintain semantic neutrality. Avoid AI-marketing metaphors, "helpful assistant" 
 
 ## The Perfect Combination (Workflow)
 
-For all complex transformations, the model MUST execute the following 2-pass protocol:
+For all complex transformations, the model SHOULD use the `/process` command to execute the following 3-pass protocol:
 
 ### Phase 1: Structured Chunking (Semantic Preservation)
 - **Segmentation:** Divide the source text into logical segments (1,000 – 1,200 words).
-- **Transformation:** Apply the primary Agent Identity (e.g., `Rewrite.txt`) and Style Matrix.
+- **Transformation:** Apply the primary Agent Identity (e.g., `Rewrite.txt`) and Style Matrix via the orchestrator.
 - **Goal:** Ensure all logical nodes and technical nuances are stabilized in the target register without argument pruning.
 
 ### Phase 2: Mandate-Only Polish (Linguistic Elevation)

@@ -1,0 +1,22 @@
+description = "Execute the 'Perfect Combination' workflow: Chunking -> Polish -> Advisory."
+prompt = """
+Execute the full 3-pass 'Sovereign Scribe' protocol on the provided file.
+
+### PHASE 1: Structured Chunking (Semantic Preservation)
+1. **Action:** Run the Python orchestrator with the primary agent (e.g., Rewrite).
+2. **Command:** `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py --input <source_file> --agent ~/.gemini/extensions/textual-agent/Agents/<primary_agent>.txt --matrix StyleMatrix.json`
+3. **Verification:** Ensure 1:1 logical node preservation and footnote integrity.
+
+### PHASE 2: Mandate-Only Polish (Linguistic Elevation)
+1. **Action:** Perform a surgical second pass on the *output* of Phase 1.
+2. **Mandate:** Elevate linguistic flow, correct grammatical inconsistencies, and enforce strict Matrix compliance (e.g., authorial singular, lexical swaps).
+3. **Constraint:** Do not alter the core arguments or logical structure.
+
+### PHASE 3: Supplementary Advisory (Parallel Metadata)
+1. **Action:** Generate structural suggestions and conceptual anchors.
+2. **Output:** Save results to `Output_Files/ADVISORY_LOG.md`.
+3. **Content:** Include suggested sources, architectural critiques, and technical metadata.
+
+Usage: `/process <file> <primary_agent>`
+Example: `/process lecture.docx rewrite`
+"""
