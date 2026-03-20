@@ -8,40 +8,36 @@ A high-precision research engine for Gemini CLI designed to process academic, th
     `gemini extensions link ~/.gemini/extensions/textual-agent`
 2.  **Navigate to a Domain Workspace:**
     Open your terminal in a folder containing your `StyleMatrix.json`.
-3.  **Process a File:**
-    `gemini "/process my_dissertation.docx rewrite"`
+3.  **Perform a Perfect Rewrite:**
+    `gemini "/process chapter_1.docx"`
 
 ---
 
 ## 🛠️ Commands
 
-### `/process <file> <agent>`
-The **Master Command** for the "Perfect Combination" workflow.
-*   **What it does:** Triggers the sequential 3-pass protocol: **Chunking** (Semantic Preservation) → **Polish** (Linguistic Elevation) → **Advisory** (Metadata Insights).
+### `/process <file>`
+The **Master Command** for the flagship "Perfect Rewrite" workflow.
+*   **What it does:** Automates the sequential 3-pass protocol: **Chunking** (via Rewrite Agent) → **Polish** (Linguistic Elevation) → **Advisory** (Metadata Insights).
 
-### `/orchestrate <file> <intent>`
-The headless, end-to-end pipeline. 
-*   **What it does:** Automatically handles Word footnote flattening, segments the text into 1,000-word blocks, processes them via the selected Agent, and restores the footnotes in the final output.
-*   **Intents:** `rewrite`, `sanitize`, `summarize`, `translate`.
+### `/orchestrate <file> <agent>`
+The general-purpose, headless pipeline.
+*   **Use when:** You need a single-pass run for **Sanitize**, **Translate**, or **Summarize**.
+*   **Agents:** `rewrite`, `sanitize`, `summarize`, `translate`.
 
 ### `/batch <file> <agent>`
 A hardened, deterministic version of orchestration.
 *   **Use when:** You need high-integrity processing with automatic retries if footnote counts or word-retention ratios fail the "Sovereign Audit."
 
-### `/advise <file>`
-The Architect's structural pass.
-*   **Use when:** You want suggestions for moving paragraphs to improve logical flow without actually changing the text. Output is saved to `ADVISORY_LOG.md`.
-
 ---
 
-## 💎 The "Perfect Combination" Workflow
+## 💎 The Flagship Workflow (Perfect Rewrite)
 
-For maximum quality, the `/process` command automates this 3-tier protocol:
+For critical rewrites, the `/process` command automates this 3-tier protocol:
 
-1.  **Phase 1: Structured Chunking** (via the Orchestrator)
-    Ensures every technical nuance is preserved and stabilized in the new register.
+1.  **Phase 1: Structured Chunking**
+    Every technical nuance is preserved and stabilized using the `Rewrite` agent identity.
 2.  **Phase 2: Mandate-Only Polish** 
-    Elevates the linguistic flow, fixes grammatical inconsistencies, and enforces strict Matrix compliance without structural interference.
+    Elevates the linguistic flow and enforces strict Matrix compliance (authorial singular, lexical swaps) without structural interference.
 3.  **Phase 3: Advisory Insights**
     Captures metadata, suggested sources, and structural critiques in the `ADVISORY_LOG.md`.
 
@@ -49,13 +45,13 @@ For maximum quality, the `/process` command automates this 3-tier protocol:
 
 ## 📝 Key Features
 
-*   **Zero-Macro Footnotes:** No setup required. The engine injects logic directly into Word via AppleScript (macOS) or COM (Windows).
-*   **Style Matrix Physics:** Style is derived deterministically from your `StyleMatrix.json`. It is not a suggestion; it is the law of the text.
-*   **The Floor Rule:** Footnotes may grow to store more nuance, but they can never shrink. Data loss is a procedural failure.
+*   **Zero-Macro Footnotes:** Autonomous logic injection into Word via AppleScript (macOS) or COM (Windows).
+*   **Style Matrix Physics:** Style is derived deterministically from your `StyleMatrix.json`.
+*   **The Floor Rule:** Footnotes can grow to store nuance, but they can never shrink.
 
 ---
 
 ## 📁 Best Practices
 
-*   **Domain Workspaces:** Always run from a folder containing your specific `StyleMatrix.json` and `STM.md`. This ensures the agent "remembers" your project-specific behavior.
-*   **Drag & Drop:** You can drag files directly into the terminal—just remember to prefix the path with `@` so the CLI can read it.
+*   **Domain Workspaces:** Run from folders containing project-specific `StyleMatrix.json` and `STM.md`.
+*   **Drag & Drop:** Drag files directly into the terminal and prefix with `@`.
