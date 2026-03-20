@@ -3,14 +3,17 @@ prompt = """
 Execute the full 3-pass 'Sovereign Scribe' protocol specifically for a high-fidelity **Rewrite** task.
 
 ### PHASE 1: Structured Chunking (Semantic Preservation)
-1. **Action:** Run the Python orchestrator using the **Rewrite.txt** agent identity.
-2. **Command:** `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py --input <source_file> --agent ~/.gemini/extensions/textual-agent/Agents/Rewrite.txt --matrix StyleMatrix.json`
+1. **Find Assets:** 
+   - Locate `StyleMatrix.json`. Search in current directory, then check `~/Applications/TextualAgent/Context_Files/StyleMatrix.json`.
+   - Use the `Rewrite.txt` agent from `~/.gemini/extensions/textual-agent/Agents/`.
+2. **Execute:** Run the Python orchestrator:
+   `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py --input <source_file> --agent ~/.gemini/extensions/textual-agent/Agents/Rewrite.txt --matrix <path_to_matrix>`
 3. **Verification:** Ensure 1:1 logical node preservation and footnote integrity.
 
 ### PHASE 2: Mandate-Only Polish (Linguistic Elevation)
-1. **Action:** Perform a surgical second pass on the *output* of Phase 1.
-2. **Mandate:** Elevate linguistic flow, correct grammatical inconsistencies, and enforce strict Matrix compliance (e.g., authorial singular, lexical swaps).
-3. **Constraint:** Do not alter the core arguments or logical structure.
+1. **Action:** Perform a surgical second pass on the *assembled output* of Phase 1.
+2. **Mandate:** Elevate linguistic flow, correct grammatical inconsistencies, and enforce strict Matrix compliance.
+3. **Constraint:** Do not alter core arguments.
 
 ### PHASE 3: Supplementary Advisory (Parallel Metadata)
 1. **Action:** Generate structural suggestions and conceptual anchors.

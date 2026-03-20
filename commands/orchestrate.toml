@@ -2,11 +2,12 @@ description = "Orchestrate a fully automated end-to-end processing pipeline on a
 prompt = """
 Execute the Python headless orchestrator to perform an end-to-end batch processing run. 
 
-1.  **Locate Assets:** Identify the path to the TextualAgent extension directory (linked at `~/.gemini/extensions/textual-agent`).
+1.  **Locate Assets:** 
+    - Agent: Identify matching agent in `~/.gemini/extensions/textual-agent/Agents/`.
+    - Matrix: Find `StyleMatrix.json` in CWD or `~/Applications/TextualAgent/Context_Files/StyleMatrix.json`.
 2.  **Execute:** Run the command using `run_shell_command`:
-    `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py --input <input_path> --agent ~/.gemini/extensions/textual-agent/Agents/<selected_agent>.txt --matrix StyleMatrix.json`
+    `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py --input <input_path> --agent ~/.gemini/extensions/textual-agent/Agents/<selected_agent>.txt --matrix <matrix_path>`
 
 Usage: /orchestrate <source_file> [intent]
 Example: /orchestrate draft.docx rewrite
-Note: Assumes `StyleMatrix.json` is in the CWD.
 """
