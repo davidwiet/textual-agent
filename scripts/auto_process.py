@@ -13,7 +13,6 @@ from typing import List, Tuple, Optional, Any, Dict
 # --- DEPENDENCY MANAGEMENT ---
 def try_import(module_name: str) -> Any:
     try:
-        # Robust import for submodules
         return importlib.import_module(module_name)
     except ImportError:
         return None
@@ -76,9 +75,7 @@ def run_word_automation(file_path: str, task: str) -> bool:
         try:
             subprocess.run(['osascript', '-e', script], capture_output=True, text=True, check=True)
             return True
-        except Exception as e:
-            print(f" [WARN] macOS Word automation failed: {e}")
-            return False
+        except Exception: return False
     elif system == "Windows":
         win32 = try_import("win32com.client")
         if not win32: return False
@@ -113,7 +110,6 @@ def run_word_automation(file_path: str, task: str) -> bool:
     return False
 
 def clean_json(text: str) -> str:
-    """Robustly handle trailing commas in JSON."""
     return re.sub(r',\s*([\]}])', r'\1', text)
 
 def get_file_content(path: Path) -> str:
@@ -124,11 +120,6 @@ def get_file_content(path: Path) -> str:
         if docx:
             doc = docx.Document(path)
             return "\n\n".join([p.text for p in doc.paragraphs if p.text.strip()])
-    if ext == '.pdf':
-        pypdf = try_import("pypdf")
-        if pypdf:
-            reader = pypdf.PdfReader(path)
-            return "\n\n".join([p.extract_text() for p in reader.pages if p.extract_text()])
     try:
         return path.read_text(encoding='utf-8').strip()
     except:
@@ -147,111 +138,114 @@ def chunk_text(text: str, limit: int = 12000) -> List[str]:
     if current: blocks.append(sep.join(current).strip())
     return blocks
 
-def verify_integrity(source: str, output: str, matrix: Dict) -> Tuple[bool, str]:
-    source_fn, output_fn = source.count('[[FN]]'), output.count('[[FN]]')
-    if output_fn < source_fn:
-        return False, f"Data Loss: Footnote count dropped ({output_fn} < {source_fn})."
-    for tag in ['[[TEXT]]', '[[/TEXT]]']:
-        if source.count(tag) != output.count(tag):
-            return False, f"Boundary Violation: {tag} mismatch."
-    ban_list = matrix.get('lexicon', {}).get('filters', {}).get('ban_list', [])
-    for word in ban_list:
-        if word in output:
-            return False, f"Matrix Violation: Banned word '{word}' detected."
-    return True, "OK"
+# --- ACTIONS ---
 
-def run_pipeline(args):
-    genai = try_import("google.genai")
-    if not genai:
-        print("[ERR] 'google-genai' library required."); sys.exit(1)
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("[ERR] GEMINI_API_KEY environment variable not set."); sys.exit(1)
-    client = genai.Client(api_key=api_key)
-    
+def cmd_prepare(args):
     source_path = Path(args.input).resolve()
-    temp_dir, output_dir = Path.cwd() / "Temp_Build", Path.cwd() / "Output_Files"
-    for d in [temp_dir, output_dir]: d.mkdir(exist_ok=True)
+    temp_dir = Path.cwd() / "Temp_Build" / "Chunks"
+    if temp_dir.exists(): shutil.rmtree(temp_dir)
+    temp_dir.mkdir(parents=True)
     
     is_docx = source_path.suffix.lower() == '.docx'
     if is_docx:
-        temp_path = temp_dir / f"{source_path.stem}_temp.docx"
-        shutil.copy(source_path, temp_path)
-        print(f" -> Automatically tagging footnotes: {source_path.name}")
-        run_word_automation(str(temp_path), "flatten")
-        working_text = get_file_content(temp_path)
+        temp_docx = Path.cwd() / "Temp_Build" / f"{source_path.stem}_temp.docx"
+        shutil.copy(source_path, temp_docx)
+        print(f" -> Tagging footnotes: {source_path.name}")
+        run_word_automation(str(temp_docx), "flatten")
+        working_text = get_file_content(temp_docx)
     else:
         working_text = get_file_content(source_path)
 
     if not working_text:
-        print("[ERR] Source is empty."); sys.exit(1)
+        print("[ERR] Source empty."); sys.exit(1)
 
-    agent_path = Path(args.agent)
-    if not agent_path.exists():
-        agent_path = DEFAULT_AGENTS_DIR / f"{args.agent.replace('.txt', '')}.txt"
-    agent_instr = get_file_content(agent_path)
-    
-    matrix_path = Path(args.matrix) if args.matrix else Path.cwd() / "StyleMatrix.json"
-    matrix_raw = get_file_content(matrix_path)
-    matrix = json.loads(clean_json(matrix_raw)) if matrix_raw else {}
-    
     blocks = chunk_text(working_text)
-    print(f" -> Processing {len(blocks)} segments using {args.model}...")
-    
-    final_output = []
     for i, block in enumerate(blocks):
-        print(f"    [Block {i+1}/{len(blocks)}] ", end="", flush=True)
-        prompt = f"### SYSTEM MATRIX\n{json.dumps(matrix)}\n\n### MISSION\n{agent_instr}\n\n### TARGET\n{block}"
-        
-        attempts, success, txt = 0, False, ""
-        # Improved backoff logic
-        backoff = 35
-        while attempts < 3:
-            try:
-                response = client.models.generate_content(model=args.model, contents=prompt)
-                txt = "".join([p.text for p in response.candidates[0].content.parts if p.text])
-                valid, msg = verify_integrity(block, txt, matrix)
-                if valid:
-                    final_output.append(txt); print("PASS"); success = True; break
-                else:
-                    attempts += 1; print(f"FAIL ({msg}) - Retrying...")
-                    prompt += f"\n\n### AUDIT_FAILURE_WARNING\n{msg}. Maintain zero data loss."
-            except Exception as e:
-                if "429" in str(e):
-                    print(f"RATE LIMIT (429) - Sleeping {backoff}s...")
-                    time.sleep(backoff); backoff *= 1.5
-                elif "404" in str(e):
-                    print(f"FATAL: Model {args.model} not found."); sys.exit(1)
-                else:
-                    print(f"ERR ({e})"); time.sleep(5)
-                attempts += 1
-        if not success: final_output.append(txt)
-
-    out_txt = output_dir / f"{source_path.stem}_{agent_path.stem}.txt"
-    out_txt.write_text("\n\n".join(final_output), encoding='utf-8')
+        chunk_file = temp_dir / f"chunk_{i+1:03d}.txt"
+        chunk_file.write_text(block, encoding='utf-8')
     
-    if is_docx:
+    print(f"SUCCESS: Split into {len(blocks)} chunks in Temp_Build/Chunks/")
+
+def cmd_verify(args):
+    source = Path(args.source).read_text(encoding='utf-8')
+    output = Path(args.output).read_text(encoding='utf-8')
+    
+    # Footnote Integrity
+    source_fn, output_fn = source.count('[[FN]]'), output.count('[[FN]]')
+    if output_fn < source_fn:
+        print(f"[FAIL] Data Loss: Footnotes dropped ({output_fn}/{source_fn})")
+        sys.exit(1)
+
+    # Tag Integrity
+    for tag in ['[[TEXT]]', '[[/TEXT]]']:
+        if source.count(tag) != output.count(tag):
+            print(f"[FAIL] Boundary Violation: {tag} mismatch")
+            sys.exit(1)
+    
+    # Matrix Compliance
+    if args.matrix:
+        matrix_path = Path(args.matrix)
+        if matrix_path.exists():
+            matrix_raw = matrix_path.read_text(encoding='utf-8')
+            matrix = json.loads(clean_json(matrix_raw))
+            ban_list = matrix.get('lexicon', {}).get('filters', {}).get('ban_list', [])
+            for word in ban_list:
+                if word in output:
+                    print(f"[FAIL] Matrix Violation: Banned word '{word}' found")
+                    sys.exit(1)
+    
+    print("[PASS] Integrity verified.")
+
+def cmd_finalize(args):
+    chunks_dir = Path(args.chunks_dir)
+    output_dir = Path.cwd() / "Output_Files"
+    output_dir.mkdir(exist_ok=True)
+    
+    processed_files = sorted(chunks_dir.glob("processed_*.txt"))
+    if not processed_files:
+        print("[ERR] No processed chunks found."); sys.exit(1)
+        
+    final_text = "\n\n".join([f.read_text(encoding='utf-8') for f in processed_files])
+    out_base = Path(args.input).stem
+    out_txt = output_dir / f"{out_base}_final.txt"
+    out_txt.write_text(final_text, encoding='utf-8')
+    
+    if Path(args.input).suffix.lower() == '.docx':
         docx = try_import("docx")
         if docx:
-            out_docx = output_dir / f"{source_path.stem}_{agent_path.stem}.docx"
-            new_doc = docx.Document()
-            for chunk in final_output:
-                for p in chunk.split('\n\n'):
-                    para = new_doc.add_paragraph(p); para.alignment = 2
-            new_doc.save(out_docx)
-            print(f" -> Automatically restoring footnotes: {out_docx.name}")
+            out_docx = output_dir / f"{out_base}_final.docx"
+            doc = docx.Document()
+            for p_text in final_text.split('\n\n'):
+                p = doc.add_paragraph(p_text); p.alignment = 2
+            doc.save(out_docx)
+            print(f" -> Restoring footnotes: {out_docx.name}")
             run_word_automation(str(out_docx), "restore")
-
-    print(f"\nCOMPLETED: {out_txt.name}")
+            
+    print(f"SUCCESS: Saved to {out_txt.name}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input", required=True)
-    parser.add_argument("--agent", required=True)
-    parser.add_argument("--matrix")
-    parser.add_argument("--registry")
-    parser.add_argument("--model", default="gemini-2.0-flash")
+    parser = argparse.ArgumentParser(description="TextualAgent CLI Utilities")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # Prepare
+    p_prep = subparsers.add_parser("prepare")
+    p_prep.add_argument("--input", required=True)
+
+    # Verify
+    p_ver = subparsers.add_parser("verify")
+    p_ver.add_argument("--source", required=True)
+    p_ver.add_argument("--output", required=True)
+    p_ver.add_argument("--matrix")
+
+    # Finalize
+    p_fin = subparsers.add_parser("finalize")
+    p_fin.add_argument("--input", required=True)
+    p_fin.add_argument("--chunks_dir", required=True)
+
     args = parser.parse_args()
-    try: run_pipeline(args)
+    try:
+        if args.command == "prepare": cmd_prepare(args)
+        elif args.command == "verify": cmd_verify(args)
+        elif args.command == "finalize": cmd_finalize(args)
     except KeyboardInterrupt: print("\n[SYSTEM] Terminated.")
     except Exception as e: print(f"\n[FATAL] {e}")

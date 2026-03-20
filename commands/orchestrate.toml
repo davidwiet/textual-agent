@@ -1,13 +1,11 @@
-description = "Orchestrate a fully automated end-to-end processing pipeline on a document."
+description = "Orchestrate a fully automated end-to-end processing pipeline."
 prompt = """
-Execute the Python headless orchestrator to perform an end-to-end batch processing run. 
+Execute a single-pass processing run. Semantic logic is handled by the Agent.
 
-1.  **Locate Assets:** 
-    - Agent: Identify matching agent in `~/.gemini/extensions/textual-agent/Agents/`.
-    - Matrix: Find `StyleMatrix.json` in CWD or `~/Applications/TextualAgent/Context_Files/StyleMatrix.json`.
-2.  **Execute:** Run the command using `run_shell_command`:
-    `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py --input <input_path> --agent ~/.gemini/extensions/textual-agent/Agents/<selected_agent>.txt --matrix <matrix_path>`
+1. **Prepare:** Run `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py prepare --input <source_file>`.
+2. **Process:** For each chunk in `Temp_Build/Chunks/`, read the content and apply the selected Agent identity.
+3. **Verify:** Run `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py verify --source <source_chunk> --output <output_chunk> --matrix StyleMatrix.json`.
+4. **Finalize:** Run `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py finalize --input <source_file> --chunks_dir Temp_Build/Chunks/`.
 
-Usage: /orchestrate <source_file> [intent]
-Example: /orchestrate draft.docx rewrite
+Usage: /orchestrate <source_file> <agent>
 """
