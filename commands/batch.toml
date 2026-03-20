@@ -1,9 +1,13 @@
-description = "Execute a hardened, deterministic batch process with length and tag verification."
+description = "Execute a high-fidelity, deterministic batch process with manual verification points."
 prompt = """
-1.  **Identify Assets:** Locate the `auto_process.py` script in the TextualAgent extension directory (`~/.gemini/extensions/textual-agent/scripts`).
-2.  **Execute:** Use `run_shell_command` to call the script with the `--input` file and selected `--agent` (from `~/.gemini/extensions/textual-agent/Agents`).
-3.  **Validation:** The script automatically verifies Footnote integrity and word count retention.
+Execute a single-pass processing run using the 'Sovereign Scribe' protocol.
+
+1. **Prepare:** Run `python3 <EXT_ROOT>/scripts/auto_process.py prepare --input <source_file>`.
+2. **Process:** For each chunk in `Temp_Build/Chunks/`, read the content and apply the selected Agent identity. 
+3. **Verify:** For each chunk, run `python3 <EXT_ROOT>/scripts/auto_process.py verify --source <source_chunk> --output <output_chunk> --matrix StyleMatrix.json`.
+4. **Finalize:** Run `python3 <EXT_ROOT>/scripts/auto_process.py finalize --input <source_file> --chunks_dir Temp_Build/Chunks/`.
+
+**Note:** Replace `<EXT_ROOT>` with the absolute path to the TextualAgent extension directory.
 
 Usage: /batch <file> <agent>
-Example: /batch draft.docx rewrite
 """

@@ -3,21 +3,22 @@ prompt = """
 Execute the flagship 'Perfect Rewrite' workflow. All semantic processing is performed by the Agent, while document prep and assembly are automated by utilities.
 
 ### 1. PREPARATION
-- **Command:** `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py prepare --input <source_file>`
+- **Command:** `python3 <EXT_ROOT>/scripts/auto_process.py prepare --input <source_file>`
 - **Action:** Flatten footnotes and segment the text into chunks in `Temp_Build/Chunks/`.
+- **Note:** Replace `<EXT_ROOT>` with the absolute path to the TextualAgent extension directory.
 
 ### 2. SEMANTIC PROCESSING (Agent-in-the-loop)
 For each chunk in `Temp_Build/Chunks/`:
 1. **Read:** Load the source chunk.
 2. **Rewrite:** Apply the `Rewrite.txt` identity and `StyleMatrix.json` rules.
-3. **Verify:** Run `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py verify --source <source_chunk> --output <output_chunk> --matrix StyleMatrix.json`.
+3. **Verify:** Run `python3 <EXT_ROOT>/scripts/auto_process.py verify --source <source_chunk> --output <output_chunk> --matrix StyleMatrix.json`.
 4. **Save:** Write the final result to `processed_<chunk_name>`.
 
 ### 3. POLISH PASS
 Perform a surgical linguistic polish on the *assembled* text to ensure Matrix compliance.
 
 ### 4. FINALIZATION
-- **Command:** `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py finalize --input <source_file> --chunks_dir Temp_Build/Chunks/`
+- **Command:** `python3 <EXT_ROOT>/scripts/auto_process.py finalize --input <source_file> --chunks_dir Temp_Build/Chunks/`
 - **Action:** Assemble chunks, generate final `.docx`, and restore footnotes.
 
 Usage: `/process <file>`

@@ -2,10 +2,12 @@ description = "Orchestrate a fully automated end-to-end processing pipeline."
 prompt = """
 Execute a single-pass processing run. Semantic logic is handled by the Agent.
 
-1. **Prepare:** Run `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py prepare --input <source_file>`.
+1. **Prepare:** Run `python3 <EXT_ROOT>/scripts/auto_process.py prepare --input <source_file>`.
 2. **Process:** For each chunk in `Temp_Build/Chunks/`, read the content and apply the selected Agent identity.
-3. **Verify:** Run `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py verify --source <source_chunk> --output <output_chunk> --matrix StyleMatrix.json`.
-4. **Finalize:** Run `python3 ~/.gemini/extensions/textual-agent/scripts/auto_process.py finalize --input <source_file> --chunks_dir Temp_Build/Chunks/`.
+3. **Verify:** Run `python3 <EXT_ROOT>/scripts/auto_process.py verify --source <source_chunk> --output <output_chunk> --matrix StyleMatrix.json`.
+4. **Finalize:** Run `python3 <EXT_ROOT>/scripts/auto_process.py finalize --input <source_file> --chunks_dir Temp_Build/Chunks/`.
+
+**Note:** Replace `<EXT_ROOT>` with the absolute path to the TextualAgent extension directory.
 
 Usage: /orchestrate <source_file> <agent>
 """
